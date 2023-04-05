@@ -6,6 +6,7 @@ import _head from 'lodash/head'
 import _toLower from 'lodash/toLower'
 import _includes from 'lodash/includes'
 import _orderBy from 'lodash/orderBy'
+import _isEmpty from 'lodash/isEmpty'
 
 import { getProducts, IProductNode } from 'api'
 import Loader from 'ui/Loader'
@@ -69,12 +70,16 @@ const ProductList: React.FC<IProductList> = ({ products }) => (
   </ul>
 )
 
+const DEFAULT_SORT_ORDER = 'asc'
+const DEFAULT_SORT_BY = 'title'
+const DEFAULT_SEATCH_QUERY = ''
+
 const Home = () => {
   const [products, setProducts] = useState<IProductNode[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
-  const [sortBy, setSortBy] = useState<'title' | 'price'>('title')
+  const [searchQuery, setSearchQuery] = useState(DEFAULT_SEATCH_QUERY)
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(DEFAULT_SORT_ORDER)
+  const [sortBy, setSortBy] = useState<'title' | 'price'>(DEFAULT_SORT_BY)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -113,8 +118,26 @@ const Home = () => {
   if (isLoading) {
     return (
       <div className='min-h-page'>
-        <div className='flex justify-center mb-2'>
+        <div className='flex justify-center my-2'>
           <Loader />
+        </div>
+      </div>
+    )
+  }
+
+  if (searchQuery && _isEmpty(filteredProducts) && !_isEmpty(products)) {
+    return (
+      <div className='min-h-page'>
+        <div className='flex justify-center my-2'>
+          <p className='text-gray-900'>
+            No products found, maybe try to
+            {' '}
+            <span className='text-blue-600 cursor-pointer' onClick={() => setSearchQuery(DEFAULT_SEATCH_QUERY)}>
+              reset
+            </span>
+            {' '}
+            your search filter.
+          </p>
         </div>
       </div>
     )
