@@ -125,6 +125,18 @@ const Home = () => {
     )
   }
 
+  if (_isEmpty(products)) {
+    return (
+      <div className='min-h-page'>
+        <div className='flex justify-center my-2'>
+          <p className='text-gray-900'>
+            No products found, try again later.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   if (searchQuery && _isEmpty(filteredProducts) && !_isEmpty(products)) {
     return (
       <div className='min-h-page'>
